@@ -1,0 +1,866 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="6h1BfGjTzJZ6sZ11ckCHxmvKVsovzAbLLWfoOvDmi5Y" />
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,接口," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="沙塔斯光辉" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="在第8章&amp;quot;乐器&amp;quot;例子中,基类Instrument中的方法往往是&amp;quot;哑&amp;quot;方法(方法体没什么实际意义),若要调用这些方法,就会出现一些错误.这是因为Instrument类的目的是为它的所有导出类创建一个通用接口,而不需要直接调用这个通用接口
+抽象类与抽象方法
+建立这个通用接口的唯一理由是:
+不同的子类可以用不同的方式表示该接口
+通用接口建立起一种基本形式,以此表示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Thinking In JAVA》笔记 9:接口">
+<meta property="og:url" content="http://paracide.github.io/2016/09/04/thinginjava9/index.html">
+<meta property="og:site_name" content="沙塔斯光辉">
+<meta property="og:description" content="在第8章&amp;quot;乐器&amp;quot;例子中,基类Instrument中的方法往往是&amp;quot;哑&amp;quot;方法(方法体没什么实际意义),若要调用这些方法,就会出现一些错误.这是因为Instrument类的目的是为它的所有导出类创建一个通用接口,而不需要直接调用这个通用接口
+抽象类与抽象方法
+建立这个通用接口的唯一理由是:
+不同的子类可以用不同的方式表示该接口
+通用接口建立起一种基本形式,以此表示">
+<meta property="og:updated_time" content="2016-11-13T06:05:35.171Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Thinking In JAVA》笔记 9:接口">
+<meta name="twitter:description" content="在第8章&amp;quot;乐器&amp;quot;例子中,基类Instrument中的方法往往是&amp;quot;哑&amp;quot;方法(方法体没什么实际意义),若要调用这些方法,就会出现一些错误.这是因为Instrument类的目的是为它的所有导出类创建一个通用接口,而不需要直接调用这个通用接口
+抽象类与抽象方法
+建立这个通用接口的唯一理由是:
+不同的子类可以用不同的方式表示该接口
+通用接口建立起一种基本形式,以此表示">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 《Thinking In JAVA》笔记 9:接口 | 沙塔斯光辉 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">沙塔斯光辉</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《Thinking In JAVA》笔记 9:接口
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-04T23:51:35+08:00" content="2016-09-04">
+              2016-09-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/04/thinginjava9/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/04/thinginjava9/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/04/thinginjava9/" class="leancloud_visitors" data-flag-title="《Thinking In JAVA》笔记 9:接口">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在第8章&quot;乐器&quot;例子中,基类Instrument中的方法往往是&quot;哑&quot;方法(方法体没什么实际意义),若要调用这些方法,就会出现一些错误.<br>这是因为Instrument类的目的是为它的所有导出类创建一个通用接口,而不需要直接调用这个通用接口</p>
+<h2 id="u62BD_u8C61_u7C7B_u4E0E_u62BD_u8C61_u65B9_u6CD5"><a href="#u62BD_u8C61_u7C7B_u4E0E_u62BD_u8C61_u65B9_u6CD5" class="headerlink" title="抽象类与抽象方法"></a>抽象类与抽象方法</h2><ul>
+<li>建立这个通用接口的唯一理由是:<ul>
+<li>不同的子类可以用不同的方式表示该接口</li>
+<li>通用接口建立起一种基本形式,以此表示所有导出类的共同部分</li>
+</ul>
+</li>
+<li>因此创建一个Instrument类并没有什么用,Java还阻止使用者这么做</li>
+</ul>
+<h2 id="u63A5_u53E3"><a href="#u63A5_u53E3" class="headerlink" title="接口"></a>接口</h2><blockquote>
+<p>一个接口:所有实现了该特定接口的类看起来都像这样.<br>  任何使用了某特定接口的代码都知道可以调用该接口的哪些方法,而且仅且需要这些.</p>
+</blockquote>
+<ul>
+<li>接口的域默认static final</li>
+</ul>
+<h2 id="u5B8C_u5168_u89E3_u8026"><a href="#u5B8C_u5168_u89E3_u8026" class="headerlink" title="完全解耦"></a>完全解耦</h2><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">C</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">play</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title">C</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">play</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>只要<code>play()</code>是通过类<code>class C</code>调用而非接口<code>interface C</code>,那么你只能使用<code>c</code>和<code>c</code>的子类</p>
+</li>
+<li><p>如果<code>play()</code>调用不是通过这个类或者子类,那么就会报错</p>
+</li>
+<li><p>如果通过一个接口,那么就会放宽限制</p>
+<ul>
+<li>一类如果已经继承了别的类,你却无法改变它的继承对象,这样会造成很大的麻烦</li>
+<li>然而让它实现一个接口,却很简单</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Apply</span> </span>&#123;</span><br><span class="line">    public <span class="literal">static</span> <span class="keyword">void</span> process(Processor p, <span class="built_in">Object</span> s) &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"Using Processor "</span> + p.name());</span><br><span class="line">        <span class="built_in">print</span>(p.process(s));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Processor</span> </span>&#123;</span><br><span class="line">    <span class="built_in">String</span> name();</span><br><span class="line">    <span class="built_in">Object</span> process(<span class="built_in">Object</span> input);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Filter</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">name</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getClass().getSimpleName();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Waveform <span class="title">process</span>(<span class="params">Waveform input</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> input;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">HighPass</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Filter</span> &#123;</span></span><br><span class="line">    double cutoff;</span><br><span class="line">    public <span class="type">HighPass</span>(double cutoff) &#123;</span><br><span class="line">        <span class="keyword">this</span>.cutoff = cutoff;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    public <span class="type">Waveform</span> process(<span class="type">Waveform</span> input) &#123;</span><br><span class="line">        <span class="keyword">return</span> input;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">LowPass</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Filter</span> &#123;</span></span><br><span class="line">    double cutoff;</span><br><span class="line">    public <span class="type">LowPass</span>(double cutoff) &#123;</span><br><span class="line">        <span class="keyword">this</span>.cutoff = cutoff;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    public <span class="type">Waveform</span> process(<span class="type">Waveform</span> input) &#123;</span><br><span class="line">        <span class="keyword">return</span> input;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>现在有个Apply类,想调用它的process方法,调用者是继承自Filter的2个子类LowPass HighPass</li>
+<li>process只接受 Processor,而LowPass HighPass已经继承了Filter<ul>
+<li>Processor是个类,那么process()和Processor耦合过紧,Filter子类无法复用process()</li>
+<li>Processor是个接口,那么让Filter的子类实现接口就可以复用process()<ul>
+<li>现在Filter是一个发现的类,而不是创建的类===&gt;无法让Filter子类实现接口</li>
+<li>构建一个FilterAdpater适配器,实现了processor,接受Filter类</li>
+<li>FilterAdpater使用了代理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="u9002_u914D_u5668_u6A21_u5F0F"><a href="#u9002_u914D_u5668_u6A21_u5F0F" class="headerlink" title="适配器模式"></a>适配器模式</h3><blockquote>
+<p>适配器模式:让接口不同的对象一起工作</p>
+</blockquote>
+<ul>
+<li>适配器实现了目标接口,让它作为一个Processor可以被Apply.process(Processor processor)接受</li>
+<li>同时代理了Filter,得到了Filter子类的具体方法<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FilterAdpater</span> <span class="keyword">implements</span> <span class="title">Processor</span> </span>&#123;</span><br><span class="line">    Filter filter;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FilterAdpater</span><span class="params">(Filter filter)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.filter = filter;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function">String <span class="title">name</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">return</span> filter.<span class="title">name</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function">Object <span class="title">process</span><span class="params">(Object input)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> filter.process((Waveform) input);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> FilterProcessor &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String... args)</span> </span>&#123;</span><br><span class="line">        Waveform w = <span class="keyword">new</span> Waveform();</span><br><span class="line">        Apply.process(<span class="keyword">new</span> FilterAdpater(<span class="keyword">new</span> LowPass(<span class="number">1</span>)), w);</span><br><span class="line">        Apply.process(<span class="keyword">new</span> FilterAdpater(<span class="keyword">new</span> HighPass(<span class="number">2</span>)), w);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Waveform</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">long</span> counter;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span> id = counter++;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Waveform "</span> + counter;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>让方法接受接口类型,是一种让任何类都可以对该方法适配的方式,这就是使用接口而不是类的强大</strong></p>
+<h2 id="Java_u4E2D_u7684_u591A_u91CD_u7EE7_u627F"><a href="#Java_u4E2D_u7684_u591A_u91CD_u7EE7_u627F" class="headerlink" title="Java中的多重继承"></a>Java中的多重继承</h2><ul>
+<li>使用接口的核心原因:为了能够向上转型为多个基类(以及由此带来的灵活性)</li>
+<li>防止客户端程序员创建该类的对象<ul>
+<li>一方面创建这样接口的对象是没有必要的,因为方法不完整</li>
+<li>另一方法,方法在运行时会报错,于是在编译时禁止创建对象</li>
+</ul>
+</li>
+</ul>
+<h2 id="u63A5_u53E3_u4E0E_u5DE5_u5382"><a href="#u63A5_u53E3_u4E0E_u5DE5_u5382" class="headerlink" title="接口与工厂"></a>接口与工厂</h2><ul>
+<li>工厂对象上调用的是创建方法,而该工厂对象将生成接口的某个实现的对象</li>
+<li>我们的代码将完全的与接口的实现分离,这就使得我们可以透明的将某个实现替代为另外一个实现<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//游戏接口,</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">Move</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//工厂接口</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="function">Game <span class="title">getGame</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line">通过工厂来创建具体的Game实现,</span><br><span class="line">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OverWatchFactory</span> <span class="keyword">implements</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Game() &#123;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">int</span> moves = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MOVES = <span class="number">3</span>;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">Move</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"OverWatch move "</span> + moves);</span><br><span class="line">                <span class="keyword">return</span> ++moves != MOVES;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WarcraftFactory</span> <span class="keyword">implements</span> <span class="title">GameFactory</span> </span>&#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Game <span class="title">getGame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Game() &#123;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">int</span> moves = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MOVES = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">Move</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> ++moves != MOVES;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        playGame(<span class="keyword">new</span> OverWatchFactory());</span><br><span class="line">        playGame(<span class="keyword">new</span> WarcraftFactory());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//这里我们可以不管工厂具体类型,创建出具体的Game实现</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">playGame</span><span class="params">(GameFactory factory)</span> </span>&#123;</span><br><span class="line">        Game game = factory.getGame();</span><br><span class="line">        <span class="keyword">while</span> (game.Move());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag">#Java</a>
+          
+            <a href="/tags/接口/" rel="tag">#接口</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/02/thinginjava8/" rel="next" title="《Thinking In JAVA》笔记 8:多态">
+                <i class="fa fa-chevron-left"></i> 《Thinking In JAVA》笔记 8:多态
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/04/MyBatis/" rel="prev" title="MyBatis一对多查询中存在相同的外键">
+                MyBatis一对多查询中存在相同的外键 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/04/thinginjava9/"
+           data-title="《Thinking In JAVA》笔记 9:接口" data-url="http://paracide.github.io/2016/09/04/thinginjava9/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Paracide" />
+          <p class="site-author-name" itemprop="name">Paracide</p>
+          <p class="site-description motion-element" itemprop="description">Alert.show("Hello 2016");</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com/u/0/114223122261014254758/posts/p/pub" target="_blank" title="Google+">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Google+
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/paracide" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#u62BD_u8C61_u7C7B_u4E0E_u62BD_u8C61_u65B9_u6CD5"><span class="nav-number">1.</span> <span class="nav-text">抽象类与抽象方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u63A5_u53E3"><span class="nav-number">2.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5B8C_u5168_u89E3_u8026"><span class="nav-number">3.</span> <span class="nav-text">完全解耦</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u9002_u914D_u5668_u6A21_u5F0F"><span class="nav-number">3.1.</span> <span class="nav-text">适配器模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java_u4E2D_u7684_u591A_u91CD_u7EE7_u627F"><span class="nav-number">4.</span> <span class="nav-text">Java中的多重继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u63A5_u53E3_u4E0E_u5DE5_u5382"><span class="nav-number">5.</span> <span class="nav-text">接口与工厂</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Paracide</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"paracide"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="360cdn"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("0KGiioi19rolhpxUStByGg1t-gzGzoHsz", "O3zthcWqSo3xlEQQWFkdVbFv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>

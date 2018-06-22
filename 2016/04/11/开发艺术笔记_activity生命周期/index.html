@@ -1,0 +1,861 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="6h1BfGjTzJZ6sZ11ckCHxmvKVsovzAbLLWfoOvDmi5Y" />
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Activity,Android,IntentFilter," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="沙塔斯光辉" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Activity生命周期一般情况当前为Activty A,启动B,会先执行A的onPause,再执行B的onResume因此onPasue中不要放耗时的任务,如果需要则放到onStop中,这样会加快B出在用户面前.
+异常情况资源相关的系统配置发生改变导致Activity被杀死并重新创建典型的就是从竖屏切换到横屏
+这是一个确定的会重新创建Activity的异常情况(而不是正常被杀死的情况)
+在onS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Android开发艺术探索》笔记:Activity生命周期与启动模式">
+<meta property="og:url" content="http://paracide.github.io/2016/04/11/开发艺术笔记_activity生命周期/index.html">
+<meta property="og:site_name" content="沙塔斯光辉">
+<meta property="og:description" content="Activity生命周期一般情况当前为Activty A,启动B,会先执行A的onPause,再执行B的onResume因此onPasue中不要放耗时的任务,如果需要则放到onStop中,这样会加快B出在用户面前.
+异常情况资源相关的系统配置发生改变导致Activity被杀死并重新创建典型的就是从竖屏切换到横屏
+这是一个确定的会重新创建Activity的异常情况(而不是正常被杀死的情况)
+在onS">
+<meta property="og:updated_time" content="2016-04-11T07:40:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Android开发艺术探索》笔记:Activity生命周期与启动模式">
+<meta name="twitter:description" content="Activity生命周期一般情况当前为Activty A,启动B,会先执行A的onPause,再执行B的onResume因此onPasue中不要放耗时的任务,如果需要则放到onStop中,这样会加快B出在用户面前.
+异常情况资源相关的系统配置发生改变导致Activity被杀死并重新创建典型的就是从竖屏切换到横屏
+这是一个确定的会重新创建Activity的异常情况(而不是正常被杀死的情况)
+在onS">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 《Android开发艺术探索》笔记:Activity生命周期与启动模式 | 沙塔斯光辉 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">沙塔斯光辉</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《Android开发艺术探索》笔记:Activity生命周期与启动模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-11T23:51:35+08:00" content="2016-04-11">
+              2016-04-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/11/开发艺术笔记_activity生命周期/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/11/开发艺术笔记_activity生命周期/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/04/11/开发艺术笔记_activity生命周期/" class="leancloud_visitors" data-flag-title="《Android开发艺术探索》笔记:Activity生命周期与启动模式">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Activity_u751F_u547D_u5468_u671F"><a href="#Activity_u751F_u547D_u5468_u671F" class="headerlink" title="Activity生命周期"></a>Activity生命周期</h1><h2 id="u4E00_u822C_u60C5_u51B5"><a href="#u4E00_u822C_u60C5_u51B5" class="headerlink" title="一般情况"></a>一般情况</h2><p>当前为Activty A,启动B,会先执行A的onPause,再执行B的onResume<br>因此onPasue中不要放耗时的任务,如果需要则放到onStop中,这样会加快B出在用户面前.</p>
+<h2 id="u5F02_u5E38_u60C5_u51B5"><a href="#u5F02_u5E38_u60C5_u51B5" class="headerlink" title="异常情况"></a>异常情况</h2><h3 id="u8D44_u6E90_u76F8_u5173_u7684_u7CFB_u7EDF_u914D_u7F6E_u53D1_u751F_u6539_u53D8_u5BFC_u81F4Activity_u88AB_u6740_u6B7B_u5E76_u91CD_u65B0_u521B_u5EFA"><a href="#u8D44_u6E90_u76F8_u5173_u7684_u7CFB_u7EDF_u914D_u7F6E_u53D1_u751F_u6539_u53D8_u5BFC_u81F4Activity_u88AB_u6740_u6B7B_u5E76_u91CD_u65B0_u521B_u5EFA" class="headerlink" title="资源相关的系统配置发生改变导致Activity被杀死并重新创建"></a>资源相关的系统配置发生改变导致Activity被杀死并重新创建</h3><h4 id="u5178_u578B_u7684_u5C31_u662F_u4ECE_u7AD6_u5C4F_u5207_u6362_u5230_u6A2A_u5C4F"><a href="#u5178_u578B_u7684_u5C31_u662F_u4ECE_u7AD6_u5C4F_u5207_u6362_u5230_u6A2A_u5C4F" class="headerlink" title="典型的就是从竖屏切换到横屏"></a>典型的就是从竖屏切换到横屏</h4><ul>
+<li>这是一个确定的会重新创建Activity的异常情况(而不是正常被杀死的情况)</li>
+<li>在<code>onStop</code>前调用<code>onSaveInstanceState</code>(与<code>onPause</code>则无先后顺序)保存当前状态</li>
+<li>在<code>onStart</code>后调用<code>onRestoreInstanceState</code>恢复状态</li>
+</ul>
+<h4 id="u8BBE_u7F6E_u4E0D_u91CD_u65B0_u521B_u5EFA"><a href="#u8BBE_u7F6E_u4E0D_u91CD_u65B0_u521B_u5EFA" class="headerlink" title="设置不重新创建"></a>设置不重新创建</h4><ul>
+<li><p>在<code>AndroidManifest.xml</code>中设置<code>android:configChanges = &quot;orientation|screenSize&quot;</code>可以使不重新创建. </p>
+<ol>
+<li>orientation是指的屏幕方向的改变</li>
+<li>sreenSize是屏幕大小的改变,在SDK13之后,旋转屏幕屏幕大小会改变从而重启Activity</li>
+</ol>
+</li>
+<li><p>设置<code>android:configChanges = &quot;orientation|screenSize&quot;</code>后,不调用之前的2个方法来恢复数据,而是调用<code>onConfigurationChanged</code></p>
+</li>
+</ul>
+<h3 id="u7CFB_u7EDF_u8D44_u6E90_u4E0D_u8DB3_u800C_u6740_u6B7B"><a href="#u7CFB_u7EDF_u8D44_u6E90_u4E0D_u8DB3_u800C_u6740_u6B7B" class="headerlink" title="系统资源不足而杀死"></a>系统资源不足而杀死</h3><p>如果一个进程没有四大组件任何一个,则会很快被杀死.如果需要,则放到service里面</p>
+<h1 id="Android_Activity_u542F_u52A8_u6A21_u5F0F"><a href="#Android_Activity_u542F_u52A8_u6A21_u5F0F" class="headerlink" title="Android Activity启动模式"></a>Android Activity启动模式</h1><h2 id="standard"><a href="#standard" class="headerlink" title="standard"></a>standard</h2><ol>
+<li><strong>在哪个任务栈所属的Ativity启动standard模式的A,就将新创建的A放到哪个任务栈中</strong></li>
+</ol>
+<h2 id="singleTop"><a href="#singleTop" class="headerlink" title="singleTop"></a>singleTop</h2><ol>
+<li>当FirstActivity处于栈顶时,无法再通过startActivity(intent)来创建一个新的FirstActivity</li>
+<li>但当FirstActivity不处于栈顶(栈顶为SecondActivity)时,可以通过startActivity来完成.</li>
+</ol>
+<h2 id="singleTask"><a href="#singleTask" class="headerlink" title="singleTask"></a>singleTask</h2><ol>
+<li>默认<code>cleanTop</code>效果即singleTask的C从任务栈为CAD中回到top时,会将他前面的AD出栈.</li>
+<li>与<code>TaskAffinity</code>配合时,待启动的Activty会放在名字与<code>TaskAffinity</code>属性相同的任务栈中</li>
+</ol>
+<h2 id="singleInstance"><a href="#singleInstance" class="headerlink" title="singleInstance"></a>singleInstance</h2><ol>
+<li>为了让其他APP能够共享这个Activity时候,这个Activity是唯一的.</li>
+<li>实现以上目的就需要这个模式,其他3个无法实现</li>
+<li>会单独将这个Activity作为一个返回栈</li>
+</ol>
+<h2 id="u6307_u5B9A_u542F_u52A8_u6A21_u5F0F"><a href="#u6307_u5B9A_u542F_u52A8_u6A21_u5F0F" class="headerlink" title="指定启动模式"></a>指定启动模式</h2><ol>
+<li><p>在AndroidMenifest中<br><code>android:launchMode = &quot;singleTask&quot;</code><br> 这种无法指定<code>FLAG_ACTIVTY_CLEAR_TOP</code></p>
+</li>
+<li><p>Intent指定<br><code>intent.addFlags(Intent.FLAG._ACTIVITY_NEW_TASK)</code><br> 无法设为 <code>singleInstance</code></p>
+</li>
+</ol>
+<h1 id="IntentFilter"><a href="#IntentFilter" class="headerlink" title="IntentFilter"></a>IntentFilter</h1><ul>
+<li>隐式调用Activity需要Intent同时匹配目标Activity中的<code>action</code>,<code>category</code>,<code>data</code>信息</li>
+<li>一个Acitivty可以设置多组IntentFilter,只要匹配其中一组就可以启动</li>
+</ul>
+<h2 id="action"><a href="#action" class="headerlink" title="action"></a>action</h2><ul>
+<li>Intent中必须有1个,否则失败,可以设置多个</li>
+<li>IntentFilter中可以多个action,且至少有一个能和Intent中的匹配,否贼失败</li>
+</ul>
+<h2 id="category"><a href="#category" class="headerlink" title="category"></a>category</h2><ul>
+<li>Intent中可以没有category,可以多个</li>
+<li>只要存在category,则存在的每一个都必须和IntentFilter中的匹配</li>
+<li>系统在调用startActivity和startActivtyForReuslt时,会默认加上<code>android.intent.category.DEFAULT</code></li>
+<li>所以当一个acitvity想要可以隐式调用时,必须在IntentFilter中指定<code>android.intent.category.DEFAULT</code></li>
+</ul>
+<h2 id="data"><a href="#data" class="headerlink" title="data"></a>data</h2><ul>
+<li>Intent必须有data数据,且data能完全匹配IntentFilter中的某个data.</li>
+<li>data分为两部分<ul>
+<li>mineType 媒体类型 image/jpeg video/*等</li>
+<li>URI: Scheme为URI模式,可以为http,content,file.<br>  <code>&lt;shceme&gt;://&lt;host&gt;:&lt;post&gt;/&lt;path&gt;|&lt;pathPrefix&gt;|&lt;pathPattern&gt;</code><br>  <a href="http://www.google.com:80/search/info" target="_blank" rel="external">http://www.google.com:80/search/info</a></li>
+<li>IntentFilter中可以<code>&lt;data android:mimeType=&quot;image/*&quot;</code>,虽然没有指定URI,但默认为file或者content,所以Intent中必须指定URI为content/file才能匹配:<code>intent.setDataAndType(Uri.parse(&quot;file://abe&quot;),&quot;image/png&quot;)</code></li>
+</ul>
+</li>
+<li>设置完整的Data数据,必须使用setDataAndTpye,因为setData和setType会互相清楚数据</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Activity/" rel="tag">#Activity</a>
+          
+            <a href="/tags/Android/" rel="tag">#Android</a>
+          
+            <a href="/tags/IntentFilter/" rel="tag">#IntentFilter</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/27/kumaweather_record/" rel="next" title="总结:跟着《第一行代码》完成天气App">
+                <i class="fa fa-chevron-left"></i> 总结:跟着《第一行代码》完成天气App
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/20/开发艺术笔记_ipc/" rel="prev" title="《Android开发艺术探索》笔记:IPC机制">
+                《Android开发艺术探索》笔记:IPC机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/11/开发艺术笔记_activity生命周期/"
+           data-title="《Android开发艺术探索》笔记:Activity生命周期与启动模式" data-url="http://paracide.github.io/2016/04/11/开发艺术笔记_activity生命周期/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Paracide" />
+          <p class="site-author-name" itemprop="name">Paracide</p>
+          <p class="site-description motion-element" itemprop="description">Alert.show("Hello 2016");</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://plus.google.com/u/0/114223122261014254758/posts/p/pub" target="_blank" title="Google+">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Google+
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/paracide" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Activity_u751F_u547D_u5468_u671F"><span class="nav-number">1.</span> <span class="nav-text">Activity生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#u4E00_u822C_u60C5_u51B5"><span class="nav-number">1.1.</span> <span class="nav-text">一般情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u5F02_u5E38_u60C5_u51B5"><span class="nav-number">1.2.</span> <span class="nav-text">异常情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#u8D44_u6E90_u76F8_u5173_u7684_u7CFB_u7EDF_u914D_u7F6E_u53D1_u751F_u6539_u53D8_u5BFC_u81F4Activity_u88AB_u6740_u6B7B_u5E76_u91CD_u65B0_u521B_u5EFA"><span class="nav-number">1.2.1.</span> <span class="nav-text">资源相关的系统配置发生改变导致Activity被杀死并重新创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#u5178_u578B_u7684_u5C31_u662F_u4ECE_u7AD6_u5C4F_u5207_u6362_u5230_u6A2A_u5C4F"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">典型的就是从竖屏切换到横屏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u8BBE_u7F6E_u4E0D_u91CD_u65B0_u521B_u5EFA"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">设置不重新创建</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u7CFB_u7EDF_u8D44_u6E90_u4E0D_u8DB3_u800C_u6740_u6B7B"><span class="nav-number">1.2.2.</span> <span class="nav-text">系统资源不足而杀死</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android_Activity_u542F_u52A8_u6A21_u5F0F"><span class="nav-number">2.</span> <span class="nav-text">Android Activity启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#standard"><span class="nav-number">2.1.</span> <span class="nav-text">standard</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singleTop"><span class="nav-number">2.2.</span> <span class="nav-text">singleTop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singleTask"><span class="nav-number">2.3.</span> <span class="nav-text">singleTask</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#singleInstance"><span class="nav-number">2.4.</span> <span class="nav-text">singleInstance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#u6307_u5B9A_u542F_u52A8_u6A21_u5F0F"><span class="nav-number">2.5.</span> <span class="nav-text">指定启动模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IntentFilter"><span class="nav-number">3.</span> <span class="nav-text">IntentFilter</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#action"><span class="nav-number">3.1.</span> <span class="nav-text">action</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#category"><span class="nav-number">3.2.</span> <span class="nav-text">category</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data"><span class="nav-number">3.3.</span> <span class="nav-text">data</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Paracide</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"paracide"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="360cdn"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("0KGiioi19rolhpxUStByGg1t-gzGzoHsz", "O3zthcWqSo3xlEQQWFkdVbFv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
